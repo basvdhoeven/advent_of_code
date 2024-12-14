@@ -16,8 +16,47 @@ func main() {
 
 	memoryString := string(memory)
 	mulContents := getMulContents(memoryString)
+
+	fmt.Printf("Sum of multiplications is: %d\n", getSumOfMultiplications(mulContents))
+
+	memoryDoOnly := getDoMemory(memoryString)
+	mulContentsDo := getMulContents(memoryDoOnly)
+
+	fmt.Printf("Sum of multiplications do instructions is: %d\n", getSumOfMultiplications(mulContentsDo))
+}
+
+func getDoMemory(memory string) string {
+	do := true
+	var doMemory string
+	for {
+		if do {
+			dontIndex := strings.Index(memory, "don't()")
+			if dontIndex == -1 {
+				doMemory += memory
+				break
+			}
+
+			doMemory += memory[:dontIndex]
+			memory = memory[dontIndex+7:]
+			do = false
+			continue
+		} else {
+			doIndex := strings.Index(memory, "do()")
+			if doIndex == -1 {
+				break
+			}
+
+			do = true
+			memory = memory[doIndex+4:]
+		}
+	}
+
+	return doMemory
+}
+
+func getSumOfMultiplications(contents []string) int {
 	sumOfMultiplications := 0
-	for _, content := range mulContents {
+	for _, content := range contents {
 		commaSeperatedContent := strings.Split(content, ",")
 		if len(commaSeperatedContent) != 2 {
 			continue
@@ -34,7 +73,7 @@ func main() {
 		sumOfMultiplications += numberA * numberB
 	}
 
-	fmt.Printf("Sum of multiplications is: %d\n", sumOfMultiplications)
+	return sumOfMultiplications
 }
 
 func getMulContents(memory string) []string {
